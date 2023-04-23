@@ -2,7 +2,7 @@
 import './Profile.css'
 
 import AuthContext from '../../Store/auth-context';
-import { useHistory } from 'react-router-dom';
+
 import React, { useEffect, useState , useContext} from "react";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const ProfileForm = () => {
   const nameChange=(e)=>{setName(e.target.value)};
   const urlChange=(e)=>{setUrl(e.target.value)};
 
-  const  history = useHistory();
+
 
   const authCtx = useContext(AuthContext)
 
