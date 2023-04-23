@@ -1,12 +1,13 @@
 import {  Redirect, Route , Switch } from 'react-router-dom';
 
 import Layout from './components/Layout/Layout';
-import UserProfile from './components/Profile/UserProfile';
+
 
 import HomePage from './pages/HomePage';
 import { useContext } from 'react';
 import AuthContext from './Store/auth-context';
 import AuthForm from './components/Auth/AuthForm';
+import ProfileForm from './components/Profile/ProfileForm';
 
 function App() {
 
@@ -21,7 +22,7 @@ function App() {
           <AuthForm />
         </Route>}
         <Route path='/profile'>
-        { authCtx.isLoggedIn && <UserProfile /> }
+        { authCtx.isLoggedIn && <ProfileForm /> }
         {!authCtx.isLoggedIn &&   <Redirect to='/auth'/> }
         </Route>
         <Route path='*'>
