@@ -2,13 +2,14 @@ import { useState, useRef, useContext } from "react";
 
 import classes from "./AuthForm.module.css";
 import AuthContext from "../../Store/auth-context";
-import { useHistory } from "react-router-dom";
+import { useHistory , Link} from "react-router-dom";
 
 const AuthForm = () => {
  const history= useHistory();
   const authCtx= useContext(AuthContext)
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const confirmPasswordRef= useRef();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,8 +24,10 @@ const AuthForm = () => {
     setIsLoading(true);
 
     let url;
-
-    if (isLogin) {
+    if(!isLogin && (enteredPassword !== confirmPasswordRef.current.value)){
+      return alert("Password is not same")
+  }
+    else if (isLogin) {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDDc95s07l_05ScHudZioRknTJX8QvwBL8";
     } else {
@@ -67,6 +70,7 @@ const AuthForm = () => {
   };
 
   return (
+    <>
     <section className={classes.auth}>
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={SubmitHandler}>
@@ -83,21 +87,36 @@ const AuthForm = () => {
             ref={passwordInputRef}
           />
         </div>
+
+        {!isLogin && <div className={classes.control}>
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            required
+            ref={confirmPasswordRef}
+          />
+        </div>}
         <div className={classes.actions}>
           {!isLoading && (
             <button>{isLogin ? "Login" : "Create Account"}</button>
           )}
           {isLoading && <p>Sending Request...</p>}
-          <button
-            type="button"
-            className={classes.toggle}
-            onClick={switchAuthModeHandler}
-          >
-            {isLogin ? "Create new account" : "Login with existing account"}
-          </button>
+          {isLogin && <Link to='/forgetpassword' > Forget Password ?</Link>}<br/>
         </div>
       </form>
+      <div className={classes.actions}>
+     <button
+     type="button"
+     className={classes.toggle}
+     onClick={switchAuthModeHandler}
+   >
+     {isLogin ? "Create new account" : "Login with existing account"}
+   </button>
+   </div>
     </section>
+    
+   </>
   );
 };
 
