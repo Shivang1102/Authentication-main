@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import AuthContext from './Store/auth-context';
 import AuthForm from './components/Auth/AuthForm';
 import ProfileForm from './components/Profile/ProfileForm';
+import Forget from './components/Auth/Forget';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
        {!authCtx.isLoggedIn &&   <Route path='/auth'>
           <AuthForm />
         </Route>}
+        {!authCtx.isLoggedIn && <Route path='/forget'><Forget/></Route>}
         <Route path='/profile'>
         { authCtx.isLoggedIn && <ProfileForm /> }
         {!authCtx.isLoggedIn &&   <Redirect to='/auth'/> }

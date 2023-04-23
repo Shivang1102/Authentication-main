@@ -4,7 +4,7 @@
   max-width: 25rem;
   border-radius: 6px;
   background-color: #0d0c0e;
-  box-shadow: 0 1px 4px rgba(56, 13, 13, 0.2);
+  box-shadow: 0 1px 4px rgba(245, 226, 226, 0.2);
   padding: 1rem;
   text-align: center;
    color: white;
@@ -47,7 +47,7 @@
 .actions button {
   cursor: pointer;
   font: inherit;
-  color: rgb(223, 200, 200);
+  color: rgb(35, 45, 182);
   background-color: #0c0a0e;
   border: 1px solid hsl(277, 24%, 81%);
   border-radius: 4px;

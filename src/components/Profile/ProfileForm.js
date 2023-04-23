@@ -9,8 +9,8 @@ import { Link } from "react-router-dom";
 
 const ProfileForm = () => {
 
-  const [name, setName]=useState();
-  const [profileUrl, setUrl]=useState();
+  const [name, setName]=useState('');
+  const [profileUrl, setUrl]=useState('');
 
   const nameChange=(e)=>{setName(e.target.value)};
   const urlChange=(e)=>{setUrl(e.target.value)};
