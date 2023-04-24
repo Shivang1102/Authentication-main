@@ -1,0 +1,21 @@
+fieldset{
+    margin: auto;
+    font-size: 20px;
+    border: 1px solid seagreen;
+    max-width: 400px;
+    padding: 10px;
+}
+fieldset h4{
+    text-align: center;
+    text-decoration: underline saddlebrown;
+}
+.table{
+    max-width: 750px;
+    margin: auto;
+    padding: 10px;
+}
+h2{
+    text-align: center;
+    padding: 10px;
+    background: seagreen;
+}
