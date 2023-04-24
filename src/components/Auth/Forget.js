@@ -45,10 +45,10 @@ const Forget=()=>{
         <Fragment>
             <form className={classes.auth}>
                 <div className={classes.control}>
-                <label>Enter Registered Email ID</label><br/>
+                <label>Enter Registered Email ID</label><br/>  
                 <input type='email' onChange={emailHandler} value={email}/><br/>
                 {send && <p>Sending link Request... </p>}
-            <button type='submit' className={classes.action} onSubmit={submitHandler}>Send Link</button><br/>
+            <button type='submit' onClick={submitHandler}>Send Link</button><br/>
                 <Link to='/auth'>Already a user ? Login</Link>
                 </div>
             </form>
