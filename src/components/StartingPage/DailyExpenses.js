@@ -73,27 +73,27 @@ const DailyExpense = () => {
   };
 
   const handleEdit = (id) => {
-    axios
+    axios   
       .get(
         `https://expensetracker-c8290-default-rtdb.firebaseio.com/expenses/${ChangesEMail}/${id}.json`
       )
       .then((res) => {
         console.log(res);
-        amount.current.value = res.data.amount;
-        des.current.value = res.data.descp;
-        categories.current.value = res.data.cate;
+        if (res.data) {
+            setEnteredAmount(res.data.amount);
+            setEnteredDescription(res.data.description);
+            setSelectedCategory(res.data.category);
         handleDelete(id);
+        }
       })
       .catch((err) => console.log(err));
 
-    // const expenseToUpdate = expenses.find((expense) => expense.id === id);
-    // setEnteredAmount(expenseToUpdate.amount);
-    // setEnteredDescription(expenseToUpdate.description);
-    // setSelectedCategory(expenseToUpdate.category);
+   
 
-    // // remove the expense that is being edited from the list
-    // const updatedExpenses = expenses.filter((expense) => expense.id !== id);
-    // setExpenses(updatedExpenses);
+    // remove the expense that is being edited from the list
+    const updatedExpenses = expenses.filter((expense) => expense.id !== id);
+    setExpenses(updatedExpenses);
+    handleDelete(id)
   };
 
   const handleDelete = (id) => {
