@@ -1,9 +1,9 @@
 
 import './Profile.css'
 
-import AuthContext from '../../Store/auth-context';
+// import AuthContext from '../../Store/auth-context';
 
-import React, { useEffect, useState , useContext} from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -17,7 +17,7 @@ const ProfileForm = () => {
 
 
 
-  const authCtx = useContext(AuthContext)
+  // const authCtx = useContext(AuthContext)
 
   const submitHandler =(event)=>{
     event.preventDefault();
@@ -27,7 +27,7 @@ const ProfileForm = () => {
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDDc95s07l_05ScHudZioRknTJX8QvwBL8',{
       method:'POST',
       body: JSON.stringify({
-        idToken:authCtx.token,
+        idToken:localStorage.getItem("token"),
         displayName:name,
         photoUrl:profileUrl,
         returnSecureToken:false
@@ -54,7 +54,7 @@ const ProfileForm = () => {
     fetch("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDDc95s07l_05ScHudZioRknTJX8QvwBL8",{
         method: 'POST',
         body:JSON.stringify({
-            idToken:authCtx.token,
+            idToken:localStorage.getItem("token"),
         }),
         headers:{'Content-Type': 'application/json'}
     }).then((res)=>{

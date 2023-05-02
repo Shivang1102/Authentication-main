@@ -2,12 +2,17 @@ import { useRef, useState, useEffect } from "react";
 import "./DailyExpenses.css";
 import axios from "axios";
 import { Button, Form, Table } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { expAction } from "../../Store/expense-slice";
 
 const DailyExpense = () => {
   const [expenses, setExpenses] = useState([]);
   const [enteredAmount, setEnteredAmount] = useState("");
   const [enteredDescription, setEnteredDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Category");
+  const [render,setRender]=useState(true)
+  
+  const dispatch=useDispatch();
 
   const amount = useRef();
   const des = useRef();
@@ -30,11 +35,12 @@ const DailyExpense = () => {
           });
         }
         setExpenses(fetchedExpenses);
+        dispatch(expAction.addItemHandler(fetchedExpenses));
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [render]);
 
   const formSubmit = (event) => {
     event.preventDefault();
@@ -71,6 +77,8 @@ const DailyExpense = () => {
         console.log(error);
       });
   };
+   
+   
 
   const handleEdit = (id) => {
     axios   
@@ -80,10 +88,11 @@ const DailyExpense = () => {
       .then((res) => {
         console.log(res);
         if (res.data) {
-            setEnteredAmount(res.data.amount);
-            setEnteredDescription(res.data.description);
-            setSelectedCategory(res.data.category);
-        handleDelete(id);
+            amount.current.value= res.data.amount
+            des.current.value= res.data.descp;
+            categories.current.value=res.data.cate
+
+       
         }
       })
       .catch((err) => console.log(err));
@@ -91,8 +100,8 @@ const DailyExpense = () => {
    
 
     // remove the expense that is being edited from the list
-    const updatedExpenses = expenses.filter((expense) => expense.id !== id);
-    setExpenses(updatedExpenses);
+    // const updatedExpenses = expenses.filter((expense) => expense.id !== id);
+    // setExpenses(updatedExpenses);
     handleDelete(id)
   };
 
@@ -110,11 +119,15 @@ const DailyExpense = () => {
         console.log(error);
       });
   };
-
-  const totalExpenses = expenses.reduce(
-    (total, expense) => total + parseInt(expense.amount),
-    0
-  );
+ let totalAmount=0;
+  Object.keys(expenses).forEach((key)=>{
+    totalAmount= totalAmount + (+expenses[key].amount);
+})
+if(totalAmount > 10000){
+    dispatch(expAction.premiun())
+}else{
+    dispatch(expAction.nonPremium());
+}
 
   return (
     <>
@@ -202,74 +215,36 @@ const DailyExpense = () => {
           />
         </Form>
       </fieldset>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-      
-
-        {totalExpenses > 10000 && (
-          <button
-            style={{
-              padding: "1px",
-              borderRadius: "10px",
-              margin: "1px",
-              color: "blue",
-              backgroundColor: "green",
-              cursor: "pointer",
-              height: "50px",
-            }}
-            onClick={() => alert("Pay 10000 to Activate Premium")}
-          >
-            Activate Premium
-          </button>
-        )}
-      </div>
-
-      {expenses.length > 0 && (
-        <div>
-          {expenses.map((expense, index) => (
-            <div
-              key={index}
-              style={{ padding: "10px", borderRadius: "10px", margin: "5px" }}
-            >
-              <p>
-                Amount : {expense.amount} -- Description : {expense.description}{" "}
-                -- Category : {expense.category}
-                <button
-                  onClick={() => handleEdit(expense.id)}
-                  style={{
-                    padding: "5px",
-                    borderRadius: "10px",
-                    margin: "5px",
-                    backgroundColor: "red",
-                    color: "yellow",
-                    backgroundColor: "blue",
-                    cursor: "pointer",
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(expense.id)}
-                  style={{
-                    padding: "5px",
-                    borderRadius: "10px",
-                    margin: "5px",
-                    color: "yellow",
-                    backgroundColor: "blue",
-                    cursor: "pointer",
-                  }}
-                >
-                  Delete
-                </button>
-              </p>
-       
-            </div>
+      <div className="table">
+        <h3>Expense List</h3>
+        <Table striped bordered hover>
+        <thead><tr>
+            <th>#</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
             
-          ))}
-                 <h2>Total expenses : {totalExpenses}</h2>
-        </div>
-      )}
+        </tr></thead>
+        <tbody>
+            {Object.keys(expenses).map((key,index)=> (
+                //console.log(getExp[key]),
+                <tr key={expenses[key].id}>
+                    <td>{index + 1}</td>
+                    <td>{expenses[key].category} </td>
+                    <td>{expenses[key].description}</td>
+                    <td>{expenses[key].amount}</td>
+                    <td><Button variant='danger' onClick={()=>handleDelete(expenses[key].id)} >Delete</Button></td>
+                    <td><Button variant='secondary' onClick={()=>handleEdit(expenses[key].id)}>Edit</Button></td>
+                </tr>
+            ))}
+        </tbody>
+        </Table>
+    </div>
+    <h2> Total Amount = Rs {totalAmount}</h2>
     </>
   );
 };
+
+
 
 export default DailyExpense;

@@ -4,28 +4,30 @@ import Layout from './components/Layout/Layout';
 
 
 import HomePage from './pages/HomePage';
-import { useContext } from 'react';
-import AuthContext from './Store/auth-context';
+// import { useContext } from 'react';
+// import AuthContext from './Store/auth-context';
 import AuthForm from './components/Auth/AuthForm';
 import ProfileForm from './components/Profile/ProfileForm';
 import Forget from './components/Auth/Forget';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const isLogin= useSelector(state=> state.auth.isAuthenticated);
+//  const authCtx =   useContext(AuthContext);
 
- const authCtx =   useContext(AuthContext);
   return (
     <Layout>
      <Switch>
-       {authCtx.isLoggedIn && <Route path='/' exact>
+       {isLogin && <Route path='/' exact>
           <HomePage />
         </Route>}
-       {!authCtx.isLoggedIn &&   <Route path='/auth'>
+       {!isLogin &&   <Route path='/auth'>
           <AuthForm />
-        </Route>}
-        {!authCtx.isLoggedIn && <Route path='/forget'><Forget/></Route>}
+        </Route>} 
+        {!isLogin && <Route path='/forget'><Forget/></Route>}
         <Route path='/profile'>
-        { authCtx.isLoggedIn && <ProfileForm /> }
-        {!authCtx.isLoggedIn &&   <Redirect to='/auth'/> }
+        {isLogin && <ProfileForm /> }
+        {!isLogin &&   <Redirect to='/auth'/> }
         </Route>
         <Route path='*'>
            <Redirect to='/'/>
