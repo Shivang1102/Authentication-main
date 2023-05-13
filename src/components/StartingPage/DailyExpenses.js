@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import "./DailyExpenses.css";
 import axios from "axios";
 import { Button, Form, Table } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector} from "react-redux";
 import { expAction } from "../../Store/expense-slice";
+import { Link } from "react-router-dom";
+import { saveAs } from 'file-saver';
 
 const DailyExpense = () => {
   const [expenses, setExpenses] = useState([]);
@@ -11,8 +13,44 @@ const DailyExpense = () => {
   const [enteredDescription, setEnteredDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Category");
   const [render,setRender]=useState(true)
+
   
   const dispatch=useDispatch();
+  const prem=useSelector(state=> state.exp.activePremium);
+  const receivedData= useSelector(state => state.exp.items)
+  const showDark=()=>{
+    localStorage.setItem('dark theme', true);
+}
+  const themeBtn=()=>{
+  const change= dispatch(expAction.changeTheme());
+  console.log(change);
+}
+
+const download=()=>{
+
+  const csvHeader = 'Amount, Description, Category\n';
+
+
+  const csvRows = receivedData.map((expense) => {
+    const { amount, description, category } = expense;
+    return `${amount}, ${description}, ${category}\n`;
+  });
+
+  const csvString = csvHeader + csvRows.join('');
+
+
+  const csvBlob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+
+  saveAs(csvBlob, 'expenses.csv');
+  // const cvs= "Category,Amount,Description\n"+
+  // Object.keys(receivedData).map(
+  //     (index)=>
+  // {console.log(`${receivedData[index].cate},${receivedData[index].amount},${receivedData[index].descp}`)}
+  // ).join("\n");
+
+  // const blob= new Blob([cvs]);
+  
+}
 
   const amount = useRef();
   const des = useRef();
@@ -89,20 +127,21 @@ const DailyExpense = () => {
         console.log(res);
         if (res.data) {
             amount.current.value= res.data.amount
-            des.current.value= res.data.descp;
-            categories.current.value=res.data.cate
+            des.current.value= res.data.description;
+            categories.current.value=res.data.category
 
        
         }
+        const updatedExpenses = expenses.filter((expense) => expense.id !== id);
+        setExpenses(updatedExpenses);
+          handleDelete(id) 
       })
       .catch((err) => console.log(err));
 
    
 
-    // remove the expense that is being edited from the list
-    // const updatedExpenses = expenses.filter((expense) => expense.id !== id);
-    // setExpenses(updatedExpenses);
-    handleDelete(id)
+     // remove the expense that is being edited from the list
+    
   };
 
   const handleDelete = (id) => {
@@ -128,6 +167,8 @@ if(totalAmount > 10000){
 }else{
     dispatch(expAction.nonPremium());
 }
+
+
 
   return (
     <>
@@ -215,6 +256,43 @@ if(totalAmount > 10000){
           />
         </Form>
       </fieldset>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+
+
+
+{totalAmount > 10000 && (<>
+  <button style={{
+    padding: "1px",
+    borderRadius: "10px",
+    margin: "1px",
+    color: "blue",
+    backgroundColor: "black",
+    cursor: "pointer",
+    height:"50px"
+  }} onClick={showDark}>Activate Premium</button>
+   <button style={{
+    padding: "1px",
+    borderRadius: "10px",
+    margin: "1px",
+    color: "blue",
+    backgroundColor: "black",
+    cursor: "pointer",
+    height:"50px"
+  }} onClick={themeBtn}>Change Theme</button>
+  
+
+  </>
+)}
+   <button style={{
+    padding: "1px",
+    borderRadius: "10px",
+    margin: "1px",
+    color: "blue",
+    backgroundColor: "black",
+    cursor: "pointer",
+    height:"50px"
+  }} onClick={download}>Download Expense </button>
+</div>
       <div className="table">
         <h3>Expense List</h3>
         <Table striped bordered hover>
@@ -235,6 +313,7 @@ if(totalAmount > 10000){
                     <td>{expenses[key].amount}</td>
                     <td><Button variant='danger' onClick={()=>handleDelete(expenses[key].id)} >Delete</Button></td>
                     <td><Button variant='secondary' onClick={()=>handleEdit(expenses[key].id)}>Edit</Button></td>
+
                 </tr>
             ))}
         </tbody>
